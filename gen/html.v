@@ -27,7 +27,7 @@ pub fn (mut gen HTMLGen) gen() string {
 fn (mut gen HTMLGen) expr(node ast.Expr) {
 	match node {
 		ast.TextExpr {
-			gen.sb.write('<p>')
+			gen.sb.write('<p class="vmd_p">')
 			for expr in node.expr {
 				gen.expr(expr)
 			}
@@ -40,14 +40,14 @@ fn (mut gen HTMLGen) expr(node ast.Expr) {
 			gen.sb.writeln('<br>')
 		}
 		ast.BoldExpr {
-			gen.sb.write('<strong>$node.text</strong>')
+			gen.sb.write('<strong class="vmd_strong">$node.text</strong>')
 		}
 		ast.ItalicExpr {
-			gen.sb.write('<em>$node.text</em>')
+			gen.sb.write('<em class="vmd_em">$node.text</em>')
 		}
 		ast.HeaderExpr {
 			id := node.text.to_lower().replace(' ', '_')
-			gen.sb.write('<h$node.level id="$id">$node.text</h$node.level>')
+			gen.sb.write('<h$node.level class="vmd_h vmd_h$node.level" id="$id">$node.text</h$node.level>')
 		}
 	}
 }
