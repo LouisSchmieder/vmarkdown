@@ -28,15 +28,10 @@ pub fn (mut parser Parser) parse_all() &ast.File {
 fn (mut parser Parser) parse_next() ?ast.Expr {
 	mut expr := ast.Expr{}
 	match parser.scanner.next() {
-		.text {
-			expr = parser.parse_text()
-		}
-		.pound {
-			expr = parser.parse_header()?
-		}
-		else {
-			return error('EOF reached')
-		}
+		.text { expr = parser.parse_text() }
+		.pound { expr = parser.parse_header() ? }
+		.invalid { return error('Token is invalid') }
+		else { return error('EOF reached') }
 	}
 }
 
@@ -57,7 +52,7 @@ fn (mut parser Parser) parse_header() ?ast.Expr {
 	for parser.scanner.next() == .pound {
 		level++
 	}
-	parser.expect(.whitespace, .text)?
+	parser.expect(.whitespace, .text) ?
 	if parser.scanner.last == .whitespace {
 		parser.expect(.text)
 	}
@@ -69,13 +64,9 @@ fn (mut parser Parser) parse_header() ?ast.Expr {
 	}
 }
 
-fn (mut parser Parser) expect(token... token.Token) ? {
+fn (mut parser Parser) expect(token ...token.Token) ? {
 	t := parser.scanner.next()
 	if t !in token {
 		return error('Unexpected token (expected `$token` but got `$t`')
 	}
-}
-
-fn (mut parser Parser) error(str string) ast.ErrorExpr {
-	return ast.ErrorExpr{str}
 }

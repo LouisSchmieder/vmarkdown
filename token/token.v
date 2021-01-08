@@ -8,8 +8,7 @@ pub enum Token {
 	eof
 	invalid
 	text
-	
-	nl
+	nl // \n
 	whitespace //  
 	backtick // `
 	asterisk // *

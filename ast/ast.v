@@ -1,6 +1,6 @@
 module ast
 
-pub type Expr = TextExpr | HeaderExpr | EofExpr | ErrorExpr
+pub type Expr = EofExpr | HeaderExpr | TextExpr
 
 pub struct TextExpr {
 	text string
@@ -8,11 +8,9 @@ pub struct TextExpr {
 
 pub struct HeaderExpr {
 	level int
-	text string
+	text  string
 }
 
-pub struct EofExpr {} // Placeholder
+pub struct EofExpr {}
 
-pub struct ErrorExpr {
-	str string
-}
+// Placeholder

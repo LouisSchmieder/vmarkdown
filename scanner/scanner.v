@@ -5,10 +5,10 @@ import token
 struct Scanner {
 	input string
 mut:
-	head int
+	head  int
 pub mut:
-	lit []byte
-	last token.Token
+	lit   []byte
+	last  token.Token
 }
 
 pub fn new_scanner(input string) &Scanner {
@@ -48,63 +48,25 @@ fn (mut scanner Scanner) check_eof() bool {
 fn (mut scanner Scanner) match_token(c byte) token.Token {
 	mut t := token.Token.invalid
 	match c {
-		` ` {
-			t = .whitespace
-		}
-		`\`` {
-			t = .backtick
-		}
-		`*` {
-			t = .asterisk
-		}
-		`_` {
-			t = .underscore
-		}
-		`{` {
-			t = .cbl
-		}
-		`}` {
-			t = .cbr
-		}
-		`[` {
-			t = .bl
-		}
-		`]` {
-			t = .br
-		}
-		`<` {
-			t = .abl
-		}
-		`>` {
-			t = .abr
-		}
-		`(` {
-			t = .rbl
-		}
-		`)` {
-			t = .rbr
-		}
-		`#` {
-			t = .pound
-		}
-		`+` {
-			t = .plus
-		}
-		`-` {
-			t = .minus
-		}
-		`.` {
-			t = .dot
-		}
-		`!` {
-			t = .ex
-		}
-		`|` {
-			t = .pipe
-		}
-		`\n` {
-			t = .nl
-		}
+		` ` { t = .whitespace }
+		`\`` { t = .backtick }
+		`*` { t = .asterisk }
+		`_` { t = .underscore }
+		`{` { t = .cbl }
+		`}` { t = .cbr }
+		`[` { t = .bl }
+		`]` { t = .br }
+		`<` { t = .abl }
+		`>` { t = .abr }
+		`(` { t = .rbl }
+		`)` { t = .rbr }
+		`#` { t = .pound }
+		`+` { t = .plus }
+		`-` { t = .minus }
+		`.` { t = .dot }
+		`!` { t = .ex }
+		`|` { t = .pipe }
+		`\n` { t = .nl }
 		else {}
 	}
 	return t
@@ -113,7 +75,9 @@ fn (mut scanner Scanner) match_token(c byte) token.Token {
 fn (mut scanner Scanner) scan_text() token.Token {
 	mut c := scanner.input[scanner.head]
 	mut l := byte(0x00)
-	for (c !in token.non_text.bytes() || (c in token.non_text.bytes() && l == `\\`)) && !scanner.check_eof() {
+	for (c !in token.non_text.bytes() ||
+		(c in token.non_text.bytes() && l == `\\`)) &&
+		!scanner.check_eof() {
 		l = c
 		c = scanner.input[scanner.head]
 		if c == `\n` {
