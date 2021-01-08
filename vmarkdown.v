@@ -1,7 +1,11 @@
-module main
+module vmarkdown
 
 import parser
+import gen
 
-fn main() {
-	mut parser := parser.new_parser('# Hello there')
+pub fn compile_markdown(input string) string {
+	mut parser := parser.new_parser(input)
+	file := parser.parse_all()
+	mut gen := gen.new_html_gen(file)
+	return gen.gen()
 }

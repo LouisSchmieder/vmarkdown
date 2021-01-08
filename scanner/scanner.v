@@ -26,6 +26,28 @@ pub fn (mut scanner Scanner) next() token.Token {
 	return t
 }
 
+pub fn (mut scanner Scanner) next_to(pattern string) {
+	scanner.lit = []byte{}
+	scanner.head += pattern.len - 1
+	for {
+		s := scanner.input[scanner.head..scanner.head + pattern.len]
+		if scanner.check_eof() || s == pattern {
+			break
+		}
+		scanner.lit << scanner.input[scanner.head]
+		scanner.head++
+	}
+	scanner.head += pattern.len
+}
+
+pub fn (mut scanner Scanner) check_next(c byte) bool {
+	return scanner.input[scanner.head] == c
+}
+
+pub fn (mut scanner Scanner) back() {
+	scanner.head--
+}
+
 fn (mut scanner Scanner) scan() token.Token {
 	scanner.lit = []byte{}
 	if scanner.check_eof() {

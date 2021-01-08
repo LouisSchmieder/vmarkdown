@@ -1,16 +1,32 @@
 module ast
 
-pub type Expr = EofExpr | HeaderExpr | TextExpr
+pub type Expr = BoldExpr | HeaderExpr | ItalicExpr | NewLineExpr | StringExpr | TextExpr
+	
 
 pub struct TextExpr {
+pub:
+	expr []Expr
+}
+
+pub struct StringExpr {
+pub:
 	text string
 }
 
+pub struct NewLineExpr {}
+
 pub struct HeaderExpr {
+pub:
 	level int
 	text  string
 }
 
-pub struct EofExpr {}
+pub struct BoldExpr {
+pub:
+	text string
+}
 
-// Placeholder
+pub struct ItalicExpr {
+pub:
+	text string
+}
