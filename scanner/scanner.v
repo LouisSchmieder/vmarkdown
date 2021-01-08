@@ -31,7 +31,10 @@ pub fn (mut scanner Scanner) next_to(pattern string) {
 	scanner.head += pattern.len - 1
 	for {
 		s := scanner.input[scanner.head..scanner.head + pattern.len]
-		if scanner.check_eof() || s == pattern {
+		if scanner.check_next_eof() || s == pattern {
+			if scanner.check_next_eof() {
+				scanner.lit << scanner.input[scanner.head]
+			}
 			break
 		}
 		scanner.lit << scanner.input[scanner.head]
@@ -40,12 +43,16 @@ pub fn (mut scanner Scanner) next_to(pattern string) {
 	scanner.head += pattern.len
 }
 
+pub fn (mut scanner Scanner) last_two() string {
+	return string([scanner.input[scanner.head - 1], scanner.input[scanner.head]])
+}
+
 pub fn (mut scanner Scanner) check_next(c byte) bool {
 	return scanner.input[scanner.head] == c
 }
 
-pub fn (mut scanner Scanner) back() {
-	scanner.head--
+pub fn (mut scanner Scanner) back(amount int) {
+	scanner.head -= amount
 }
 
 fn (mut scanner Scanner) scan() token.Token {
@@ -55,16 +62,18 @@ fn (mut scanner Scanner) scan() token.Token {
 	}
 	mut c := scanner.input[scanner.head]
 	if c in token.non_text.bytes() {
-		if c != ` ` || scanner.last != .text {
-			scanner.lit << c
-			return scanner.match_token(c)
-		}
+		scanner.lit << c
+		return scanner.match_token(c)
 	}
 	return scanner.scan_text()
 }
 
 fn (mut scanner Scanner) check_eof() bool {
 	return scanner.head >= scanner.input.len
+}
+
+fn (mut scanner Scanner) check_next_eof() bool {
+	return scanner.head + 1 >= scanner.input.len
 }
 
 fn (mut scanner Scanner) match_token(c byte) token.Token {
@@ -89,25 +98,32 @@ fn (mut scanner Scanner) match_token(c byte) token.Token {
 		`!` { t = .ex }
 		`|` { t = .pipe }
 		`\n` { t = .nl }
+		`:` { t = .ddot }
 		else {}
 	}
 	return t
 }
 
+pub fn (mut scanner Scanner) next_str() string {
+	return string([scanner.input[scanner.head + 1]])
+}
+
 fn (mut scanner Scanner) scan_text() token.Token {
 	mut c := scanner.input[scanner.head]
 	mut l := byte(0x00)
-	for (c !in token.non_text.bytes() ||
-		(c in token.non_text.bytes() && l == `\\`)) &&
-		!scanner.check_eof() {
+	for {
 		l = c
 		c = scanner.input[scanner.head]
 		if c == `\n` {
 			scanner.head--
 			break
 		}
-		scanner.lit << c
-		scanner.head++
+		if ((c !in token.non_text.bytes() || l == `\\`)) && !scanner.check_next_eof() {
+			scanner.lit << c
+			scanner.head++
+		} else {
+			break
+		}
 	}
 	return .text
 }

@@ -49,5 +49,29 @@ fn (mut gen HTMLGen) expr(node ast.Expr) {
 			id := node.text.to_lower().replace(' ', '_')
 			gen.sb.write('<h$node.level class="vmd_h vmd_h$node.level" id="$id">$node.text</h$node.level>')
 		}
+		ast.LinkExpr {
+			link := if node.from_var { gen.file.vars[node.link].value } else { node.link }
+			gen.sb.write('<a href="$link" class="vmd_a">$node.text</a>')
+		}
+		ast.ImageExpr {
+			link := if node.from_var { gen.file.vars[node.link].value } else { node.link }
+			gen.sb.write('<img alt="$node.text" src="$link" class="vmd_img">') 
+		}
+		ast.VarExpr {
+			gen.sb.writeln('<!--- Variable: $node.name => $node.value -->')
+		}
+		ast.InvalidExpr {
+			gen.sb.writeln('<!--- $node.text -->')
+		}
+		ast.WhitespaceExpr {
+			gen.sb.write('&nbsp;')
+		}
+		ast.BlockquoteExpr {
+			gen.sb.write('<blockquote class="vmd_blockquote">')
+			for expr in node.expr {
+				gen.expr(expr)
+			}
+			gen.sb.writeln('</blockquote>')
+		}
 	}
 }

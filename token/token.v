@@ -1,7 +1,7 @@
 module token
 
 const (
-	non_text = '`*_{}[]<>()#+-.!|\n '
+	non_text = '`*_{}[]<>()#+-.!|\n :'
 )
 
 pub enum Token {
@@ -27,4 +27,5 @@ pub enum Token {
 	dot // .
 	ex // !
 	pipe // |
+	ddot // :
 }
