@@ -1,0 +1,8 @@
+# Binaries for programs and plugins
+main
+vmarkdown
+*.exe
+*.exe~
+*.so
+*.dylib
+*.dll
